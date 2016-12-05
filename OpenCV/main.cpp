@@ -13,8 +13,8 @@ int main() {
 		std::cerr << "Cannot read image!" << std::endl;
 		return -1;
 	}
-	namedWindow("source", CV_WINDOW_NORMAL);
-	imshow("source", src);
+	// namedWindow("source", CV_WINDOW_NORMAL);
+	// imshow("source", src);
 
 	Mat gray;
 	cvtColor(src, gray, CV_BGR2GRAY);
@@ -22,12 +22,14 @@ int main() {
 
 	std::vector<Vec3f> circles;
 	HoughCircles(gray, circles, CV_HOUGH_GRADIENT, 1, 30, 200, 35, 0, 100);
-	for (size_t i = 0; i < circles.size(); i++) {
-		Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
-		int radius = cvRound(circles[i][2]);
-		circle(src, center, 3, Scalar(0, 255, 0), -1, 8, 0);
-		circle(src, center, radius, Scalar(0, 0, 255), 3, 8, 0);
-		std::cout << "Center: " << center << "\nRadius: " << radius << std::endl;
+	for (auto const &data : circles) {
+		Point center(cvRound(data[0]), cvRound(data[1]));
+		int radius = cvRound(data[2]);
+		circle(src, center, radius, Scalar(0, 255, 0), 3, 8, 0);
+	}
+
+	for (auto const &circle : circles) {
+		std::cout << "Center: " << Point{cvRound(circle[0]), cvRound(circle[1])} << "\tRadius: " << cvRound(circle[2]) << std::endl;
 	}
 
 	namedWindow("Hough Circles", CV_WINDOW_NORMAL);
