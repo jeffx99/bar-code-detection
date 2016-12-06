@@ -7,9 +7,7 @@
 using namespace cv;
 
 int roundToTens(int x) {
-	if (x % 10)
-		x += 10 - x % 10;
-	return x;
+	return ((x + 5) / 10) * 10;
 }
 
 int main() {
@@ -36,12 +34,17 @@ int main() {
 	}
 
 	// Extract the center points
-	std::vector<Point> centers;
+	std::vector<Point> centers, centers_sorted_by_y;
 	for (auto const &circle : circles) {
 		centers.push_back(Point{ cvRound(circle[0]), cvRound(circle[1]) });
+		centers_sorted_by_y.push_back(Point{ cvRound(circle[0]), cvRound(circle[1]) });
 	}
 
 	// Sort the center points based on their X-coordinate
+	std::sort(centers.begin(), centers.end(),
+		[](const Point &a, const Point &b) {
+		return a.x < b.x;
+	});
 	std::sort(centers.begin(), centers.end(),
 		[](const Point &a, const Point &b) {
 		return a.x < b.x;
@@ -53,15 +56,24 @@ int main() {
 		center.y = roundToTens(center.y);
 	}
 
-	for (size_t i = 1; i < centers.size(); i++) {
-		std::cout << i << "\tCenter: " << centers[i] << "\tDifference X: " << centers[i].x - centers[i - 1].x << std::endl;
+	for (auto const &data : centers) {
+		std::cout << data << std::endl;
+	}
 
+	for (size_t i = 0; i < centers.size(); i++) {
+		// std::cout << i << "\tCenter: " << centers[i] << std::endl;
+		if (i != 0) {
+			// std::cout << "\t\tDistance from prior center X: \t" << centers[i].x - centers[i - 1].x << std::endl;
+		}
 	}
 
 	// Draw the circles on the rounded position
 	for (auto const &data : centers) {
 		circle(src, data, 10, Scalar(0, 0, 255), 3, 8, 0);
 	}
+
+	std::vector<Point> all_possible_centers;
+
 
 	namedWindow("Hough Circles", CV_WINDOW_NORMAL);
 	imshow("Hough Circles", src);
