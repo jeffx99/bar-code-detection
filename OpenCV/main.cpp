@@ -34,17 +34,12 @@ int main() {
 	}
 
 	// Extract the center points
-	std::vector<Point> centers, centers_sorted_by_y;
+	std::vector<Point> centers;
 	for (auto const &circle : circles) {
 		centers.push_back(Point{ cvRound(circle[0]), cvRound(circle[1]) });
-		centers_sorted_by_y.push_back(Point{ cvRound(circle[0]), cvRound(circle[1]) });
 	}
 
 	// Sort the center points based on their X-coordinate
-	std::sort(centers.begin(), centers.end(),
-		[](const Point &a, const Point &b) {
-		return a.x < b.x;
-	});
 	std::sort(centers.begin(), centers.end(),
 		[](const Point &a, const Point &b) {
 		return a.x < b.x;
